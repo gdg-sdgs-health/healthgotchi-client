@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MOCK_USER } from "@/data/mock";
+import { useLocation } from "wouter";
 
 const containerVars = {
   hidden: { opacity: 0 },
@@ -20,6 +21,13 @@ const itemVars = {
 };
 
 export default function Profile() {
+  const [, setLocation] = useLocation();
+
+  const handleLogout = () => {
+    localStorage.removeItem("auth_token");
+    setLocation("/login");
+  };
+
   return (
     <motion.div 
       className="p-6 pb-24"
@@ -114,7 +122,11 @@ export default function Profile() {
       </motion.div>
 
       <motion.div variants={itemVars}>
-        <Button variant="outline" className="w-full rounded-2xl h-14 border-red-200/50 bg-white/20 backdrop-blur-md text-red-500 hover:bg-red-50/50 hover:text-red-600 font-bold text-[15px] gap-2">
+        <Button 
+          variant="outline" 
+          className="w-full rounded-2xl h-14 border-red-200/50 bg-white/20 backdrop-blur-md text-red-500 hover:bg-red-50/50 hover:text-red-600 font-bold text-[15px] gap-2"
+          onClick={handleLogout}
+        >
           <LogOut className="w-4 h-4" />
           로그아웃
         </Button>
