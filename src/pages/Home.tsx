@@ -54,7 +54,7 @@ export default function Home() {
       <motion.div variants={itemVars} className="mb-6 flex justify-between items-end">
         <div>
           <h1 className="text-2xl font-extrabold flex items-center gap-2">
-            안녕하세요! <span className="inline-block animate-wave origin-[70%_70%]">👋</span>
+            안녕하세요! <span className="inline-block animate-wave origin-[70%_70%]"></span>
           </h1>
           <p className="text-muted-foreground mt-1 font-medium">건강한 하루를 시작해볼까요?</p>
         </div>
