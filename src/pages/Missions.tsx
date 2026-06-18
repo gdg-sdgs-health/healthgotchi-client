@@ -66,21 +66,20 @@ export default function Missions() {
       </motion.div>
 
       <motion.div variants={itemVars} className="mb-8">
-        <Card className="border-none shadow-md bg-linear-to-r from-primary to-pink-400 text-white overflow-hidden">
+        <Card className="border border-white/40 shadow-xl bg-white/30 backdrop-blur-xl text-gray-800 overflow-hidden rounded-3xl">
           <CardContent className="p-6 relative">
-            {/* Decorative background shapes */}
-            <div className="absolute -top-10 -right-10 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
-            <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-white/10 rounded-full blur-xl"></div>
+            <div className="absolute -top-10 -right-10 w-32 h-32 bg-primary/10 rounded-full blur-2xl"></div>
+            <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-pink-300/10 rounded-full blur-xl"></div>
             
             <div className="relative z-10">
               <h2 className="font-bold text-lg mb-1">오늘의 달성률 {progressPercent}%</h2>
-              <p className="text-white/80 text-sm font-medium mb-4">
+              <p className="text-gray-500 text-sm font-medium mb-4">
                 {totalCount - completedCount}개 미션이 남았어요!
               </p>
               
-              <div className="bg-black/20 rounded-full h-3 overflow-hidden">
+              <div className="bg-white/40 border border-white/20 rounded-full h-3 overflow-hidden">
                 <motion.div 
-                  className="h-full bg-white rounded-full"
+                  className="h-full bg-linear-to-r from-primary to-pink-400 rounded-full"
                   initial={{ width: 0 }}
                   animate={{ width: `${progressPercent}%` }}
                   transition={{ duration: 1, ease: "easeOut" }}
@@ -95,8 +94,8 @@ export default function Missions() {
         {missions.map((mission) => (
           <Card 
             key={mission.id} 
-            className={`border-none shadow-sm transition-all duration-200 cursor-pointer overflow-hidden
-              ${mission.completed ? 'bg-gray-50 opacity-75' : 'bg-white hover:shadow-md'}`}
+            className={`border border-white/30 shadow-sm transition-all duration-200 cursor-pointer overflow-hidden rounded-2xl
+              ${mission.completed ? 'bg-white/20 backdrop-blur-xs opacity-60' : 'bg-white/40 backdrop-blur-md hover:bg-white/50 hover:shadow-md'}`}
             onClick={() => toggleMission(mission.id)}
           >
             <CardContent className="p-4">
@@ -118,22 +117,22 @@ export default function Missions() {
                   <p className="text-xs text-gray-500 mt-1 mb-3 line-clamp-1">{mission.description}</p>
                   
                   <div className="flex flex-wrap gap-2">
-                    <Badge variant="outline" className="bg-gray-100 text-gray-600 border-none px-2 py-0.5 rounded-lg flex gap-1.5 items-center">
+                    <Badge variant="outline" className="bg-white/40 text-gray-600 border border-white/30 backdrop-blur-sm px-2 py-0.5 rounded-lg flex gap-1.5 items-center">
                       <Clock className="w-3 h-3" /> {mission.time}
                     </Badge>
-                    <Badge variant="outline" className="bg-gray-100 text-gray-600 border-none px-2 py-0.5 rounded-lg flex gap-1.5 items-center">
+                    <Badge variant="outline" className="bg-white/40 text-gray-600 border border-white/30 backdrop-blur-sm px-2 py-0.5 rounded-lg flex gap-1.5 items-center">
                       {getSourceIcon(mission.source)} {mission.source}
                     </Badge>
                     {mission.streak > 0 && (
-                      <Badge variant="secondary" className="bg-orange-50 text-orange-600 hover:bg-orange-50 border-none px-2 py-0.5 rounded-lg">
+                      <Badge variant="secondary" className="bg-orange-50/60 text-orange-600 hover:bg-orange-50/60 border border-orange-100/30 backdrop-blur-sm px-2 py-0.5 rounded-lg">
                         🔥 {mission.streak}일 연속
                       </Badge>
                     )}
                   </div>
                 </div>
                 
-                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 
-                  ${mission.completed ? 'bg-gray-200 grayscale' : 'bg-gray-50'}`}>
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border border-white/30 backdrop-blur-sm
+                  ${mission.completed ? 'bg-gray-200/50 grayscale' : 'bg-white/50'}`}>
                   {getCategoryIcon(mission.category)}
                 </div>
               </div>
