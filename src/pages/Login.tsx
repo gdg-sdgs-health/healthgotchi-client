@@ -17,7 +17,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 relative overflow-hidden bg-[#f8f9ff]">
+    <div className="h-screen w-full flex items-center justify-center p-6 relative overflow-hidden bg-[#f8f9ff]">
       {/* Dynamic Background Elements */}
       <motion.div 
         animate={{ 
@@ -41,58 +41,60 @@ export default function Login() {
       />
 
       <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-[400px] relative z-10"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+        className="w-full max-w-[400px] relative z-10 flex flex-col items-center"
       >
-        <Card className="border border-white/40 shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] bg-white/40 backdrop-blur-2xl rounded-[2.5rem] overflow-hidden">
-          <CardContent className="p-10 flex flex-col items-center">
-            {/* Logo Area */}
-            <div className="relative mb-10">
-              <motion.div 
-                animate={{ rotate: [0, 5, -5, 0] }}
-                transition={{ duration: 4, repeat: Infinity }}
-                className="w-24 h-24 bg-white/60 backdrop-blur-md rounded-[2rem] shadow-xl border border-white/50 flex items-center justify-center text-6xl relative z-10"
-              >
-                🐣
-              </motion.div>
-              <div className="absolute -inset-4 bg-primary/20 blur-2xl rounded-full animate-pulse" />
-            </div>
-            
-            <div className="space-y-4 mb-12 text-center">
-              <h1 className="text-4xl font-[900] tracking-[0.15em] text-gray-900 uppercase font-sans">
-                Care<span className="text-primary">gochi</span>
-              </h1>
-              <p className="text-gray-500 font-medium leading-relaxed text-sm">
-                당신의 건강 데이터를 먹고 자라는 <br />
-                특별한 AI 동반자
-              </p>
-            </div>
+        {/* Logo Area */}
+        <div className="relative mb-8">
+          <motion.div 
+            animate={{ 
+              y: [0, -10, 0],
+              rotate: [0, 5, -5, 0] 
+            }}
+            transition={{ 
+              y: { duration: 4, repeat: Infinity, ease: "easeInOut" },
+              rotate: { duration: 5, repeat: Infinity, ease: "easeInOut" }
+            }}
+            className="w-28 h-28 bg-white/40 backdrop-blur-xl rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.05)] border border-white/50 flex items-center justify-center text-6xl relative z-10"
+          >
+            🐣
+          </motion.div>
+          <div className="absolute -inset-6 bg-primary/15 blur-3xl rounded-full animate-pulse" />
+        </div>
+        
+        <div className="space-y-4 mb-14 text-center">
+          <h1 className="text-5xl font-[900] tracking-[0.2em] text-gray-900 uppercase font-sans ml-[0.2em]">
+            Care<span className="text-primary">gochi</span>
+          </h1>
+          <p className="text-gray-400 font-semibold leading-relaxed text-sm tracking-wide">
+            당신의 건강 데이터를 먹고 자라는 <br />
+            특별한 AI 동반자
+          </p>
+        </div>
 
-            {/* Google Login Wrapper with custom styling hint */}
-            <div className="w-full relative group">
-              <div className="absolute -inset-1 bg-linear-to-r from-primary/20 to-pink-300/20 blur opacity-0 group-hover:opacity-100 transition duration-500 rounded-full" />
-              <div className="relative flex justify-center">
-                <GoogleLogin
-                  onSuccess={handleSuccess}
-                  onError={handleError}
-                  useOneTap
-                  shape="pill"
-                  theme="filled_blue"
-                  size="large"
-                  width="320px"
-                  text="continue_with"
-                />
-              </div>
-            </div>
+        {/* Google Login Wrapper */}
+        <div className="w-full flex justify-center relative">
+          <div className="absolute inset-0 bg-primary/5 blur-2xl rounded-full scale-150" />
+          <div className="relative">
+            <GoogleLogin
+              onSuccess={handleSuccess}
+              onError={handleError}
+              useOneTap
+              shape="pill"
+              theme="outline"
+              size="large"
+              width="250px"
+              text="continue_with"
+            />
+          </div>
+        </div>
 
-            <p className="mt-10 text-[11px] text-gray-400 font-medium text-center leading-relaxed">
-              시작함으로써 케어고치의 <span className="text-primary/70 underline cursor-pointer">이용약관</span> 및 <br />
-              <span className="text-primary/70 underline cursor-pointer">개인정보 처리방침</span>에 동의하게 됩니다.
-            </p>
-          </CardContent>
-        </Card>
+        <p className="mt-12 text-[10px] text-gray-400 font-bold uppercase tracking-[0.1em] text-center opacity-60">
+          By continuing, you agree to our <br />
+          <span className="underline cursor-pointer hover:text-primary transition-colors">Terms</span> & <span className="underline cursor-pointer hover:text-primary transition-colors">Privacy Policy</span>
+        </p>
       </motion.div>
     </div>
   );
