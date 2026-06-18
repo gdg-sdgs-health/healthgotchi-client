@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MOCK_USER } from "@/data/mock";
+import { useLocation } from "wouter";
 
 const containerVars = {
   hidden: { opacity: 0 },
@@ -20,6 +21,13 @@ const itemVars = {
 };
 
 export default function Profile() {
+  const [, setLocation] = useLocation();
+
+  const handleLogout = () => {
+    localStorage.removeItem("auth_token");
+    setLocation("/login");
+  };
+
   return (
     <motion.div 
       className="p-6 pb-24"
@@ -33,17 +41,17 @@ export default function Profile() {
       </motion.div>
 
       <motion.div variants={itemVars} className="mb-8">
-        <Card className="border-none shadow-md bg-linear-to-br from-primary to-pink-400 text-white overflow-hidden">
+        <Card className="border border-white/40 shadow-xl bg-white/30 backdrop-blur-xl text-gray-800 overflow-hidden rounded-3xl">
           <CardContent className="p-6 flex items-center gap-5 relative">
-            <div className="absolute -top-12 -right-12 w-40 h-40 bg-white/10 rounded-full blur-2xl"></div>
+            <div className="absolute -top-12 -right-12 w-40 h-40 bg-primary/10 rounded-full blur-2xl"></div>
             
-            <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center shrink-0 border border-white/30 backdrop-blur-sm z-10">
-              <User className="w-8 h-8 text-white" />
+            <div className="w-16 h-16 rounded-full bg-white/40 flex items-center justify-center shrink-0 border border-white/30 backdrop-blur-md z-10">
+              <User className="w-8 h-8 text-primary" />
             </div>
             <div className="relative z-10 flex-1 min-w-0">
-              <h2 className="font-bold text-xl mb-1 truncate">{MOCK_USER.name}</h2>
-              <p className="text-white/80 text-sm font-medium mb-1 truncate">{MOCK_USER.email}</p>
-              <p className="text-white/60 text-xs mt-2">가입일: {MOCK_USER.joinedAt}</p>
+              <h2 className="font-bold text-xl mb-1 truncate text-gray-900">{MOCK_USER.name}</h2>
+              <p className="text-gray-500 text-sm font-medium mb-1 truncate">{MOCK_USER.email}</p>
+              <p className="text-gray-400 text-xs mt-2">가입일: {MOCK_USER.joinedAt}</p>
             </div>
           </CardContent>
         </Card>
@@ -51,40 +59,40 @@ export default function Profile() {
 
       <motion.div variants={itemVars} className="mb-8">
         <h3 className="font-bold text-[15px] text-gray-800 mb-3 px-1">연동된 서비스</h3>
-        <Card className="border-2 border-dashed border-blue-200/60 shadow-none bg-white/50">
+        <Card className="border border-white/40 shadow-sm bg-white/30 backdrop-blur-md rounded-2xl overflow-hidden">
           <CardContent className="p-0">
-            <div className="flex items-center justify-between p-4 border-b border-gray-100/50">
+            <div className="flex items-center justify-between p-4 border-b border-white/20">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-red-50 flex items-center justify-center text-[#EA4335]">
+                <div className="w-8 h-8 rounded-xl bg-red-50/60 backdrop-blur-sm flex items-center justify-center text-[#EA4335] border border-red-100/30">
                   <SiGmail className="w-4 h-4" />
                 </div>
                 <span className="font-semibold text-sm">Gmail</span>
               </div>
-              <Badge variant="outline" className="bg-green-50 text-green-600 border-green-200/50 rounded-lg">
+              <Badge variant="outline" className="bg-green-50/60 text-green-600 border-green-200/30 backdrop-blur-sm rounded-lg">
                 연결됨
               </Badge>
             </div>
             
-            <div className="flex items-center justify-between p-4 border-b border-gray-100/50">
+            <div className="flex items-center justify-between p-4 border-b border-white/20">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-blue-50 flex items-center justify-center text-[#4285F4]">
+                <div className="w-8 h-8 rounded-xl bg-blue-50/60 backdrop-blur-sm flex items-center justify-center text-[#4285F4] border border-blue-100/30">
                   <SiGooglecalendar className="w-4 h-4" />
                 </div>
                 <span className="font-semibold text-sm">Google Calendar</span>
               </div>
-              <Badge variant="outline" className="bg-green-50 text-green-600 border-green-200/50 rounded-lg">
+              <Badge variant="outline" className="bg-green-50/60 text-green-600 border-green-200/30 backdrop-blur-sm rounded-lg">
                 연결됨
               </Badge>
             </div>
             
             <div className="flex items-center justify-between p-4">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-xl bg-green-50 flex items-center justify-center text-[#34A853]">
+                <div className="w-8 h-8 rounded-xl bg-green-50/60 backdrop-blur-sm flex items-center justify-center text-[#34A853] border border-green-100/30">
                   <SiGooglesheets className="w-4 h-4" />
                 </div>
                 <span className="font-semibold text-sm">Google Sheets</span>
               </div>
-              <Badge variant="outline" className="bg-green-50 text-green-600 border-green-200/50 rounded-lg">
+              <Badge variant="outline" className="bg-green-50/60 text-green-600 border-green-200/30 backdrop-blur-sm rounded-lg">
                 연결됨
               </Badge>
             </div>
@@ -96,7 +104,7 @@ export default function Profile() {
       </motion.div>
 
       <motion.div variants={itemVars} className="space-y-3 mb-10">
-        <button className="w-full flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all text-left">
+        <button className="w-full flex items-center justify-between p-4 bg-white/40 backdrop-blur-md rounded-2xl shadow-sm border border-white/30 hover:bg-white/50 transition-all text-left">
           <div className="flex items-center gap-3">
             <span className="text-xl">🛡</span>
             <span className="font-semibold text-gray-800 text-[15px]">개인정보 보호</span>
@@ -104,7 +112,7 @@ export default function Profile() {
           <ChevronRight className="w-5 h-5 text-gray-400" />
         </button>
         
-        <button className="w-full flex items-center justify-between p-4 bg-white rounded-2xl shadow-sm hover:shadow-md transition-all text-left">
+        <button className="w-full flex items-center justify-between p-4 bg-white/40 backdrop-blur-md rounded-2xl shadow-sm border border-white/30 hover:bg-white/50 transition-all text-left">
           <div className="flex items-center gap-3">
             <span className="text-xl">❓</span>
             <span className="font-semibold text-gray-800 text-[15px]">도움말 & 지원</span>
@@ -114,7 +122,11 @@ export default function Profile() {
       </motion.div>
 
       <motion.div variants={itemVars}>
-        <Button variant="outline" className="w-full rounded-2xl h-14 border-red-200 text-red-500 hover:bg-red-50 hover:text-red-600 font-bold text-[15px] gap-2">
+        <Button 
+          variant="outline" 
+          className="w-full rounded-2xl h-14 border-red-200/50 bg-white/20 backdrop-blur-md text-red-500 hover:bg-red-50/50 hover:text-red-600 font-bold text-[15px] gap-2"
+          onClick={handleLogout}
+        >
           <LogOut className="w-4 h-4" />
           로그아웃
         </Button>

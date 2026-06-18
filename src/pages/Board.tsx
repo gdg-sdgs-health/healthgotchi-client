@@ -35,9 +35,9 @@ export default function Board() {
       </motion.div>
 
       <motion.div variants={itemVars} className="mb-8">
-        <Card className="border-none shadow-sm bg-primary/10">
+        <Card className="border border-white/40 shadow-sm bg-primary/10 backdrop-blur-md rounded-2xl">
           <CardContent className="p-4 flex items-start gap-3">
-            <div className="bg-primary/20 p-2 rounded-xl text-primary mt-1">
+            <div className="bg-primary/20 backdrop-blur-sm p-2 rounded-xl text-primary mt-1 border border-primary/20">
               <MessageCircleHeart className="w-5 h-5" />
             </div>
             <div>
@@ -52,11 +52,11 @@ export default function Board() {
 
       <motion.div variants={itemVars} className="space-y-4">
         {BOARD_POSTS.map((post) => (
-          <Card key={post.id} className="border-none shadow-sm hover:shadow-md transition-shadow overflow-hidden">
+          <Card key={post.id} className="border border-white/40 shadow-sm bg-white/40 backdrop-blur-md hover:bg-white/50 transition-all overflow-hidden rounded-3xl">
             <CardContent className="p-0">
               <div className="p-5">
                 <div className="flex items-center gap-3 mb-4">
-                  <Avatar className={`w-10 h-10 ${post.color}`}>
+                  <Avatar className={`w-10 h-10 ${post.color.replace('bg-', 'bg-')}/60 backdrop-blur-sm border border-white/30`}>
                     <AvatarFallback className="bg-transparent text-xl font-bold">
                       {post.emoji}
                     </AvatarFallback>
@@ -64,7 +64,7 @@ export default function Board() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-0.5">
                       <span className="font-bold text-gray-900">{post.petName}</span>
-                      <Badge variant="secondary" className="bg-gray-100 text-gray-600 hover:bg-gray-100 border-none px-1.5 py-0 text-[10px] rounded-md h-5 font-semibold">
+                      <Badge variant="secondary" className="bg-white/40 text-gray-600 hover:bg-white/50 border border-white/30 backdrop-blur-sm px-1.5 py-0 text-[10px] rounded-md h-5 font-semibold">
                         {post.ownerName}
                       </Badge>
                     </div>
@@ -79,7 +79,7 @@ export default function Board() {
                   </p>
                 </div>
               </div>
-              <Separator className="bg-gray-50" />
+              <Separator className="bg-white/20" />
             </CardContent>
           </Card>
         ))}
