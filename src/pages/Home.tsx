@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { Heart, Activity, TrendingUp, ChevronRight, Pill, Moon } from "lucide-react";
+import { Heart, Activity, TrendingUp, ChevronRight, Pill, Moon, Camera } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
 import { MOCK_USER, RECENT_ACTIVITY } from "@/data/mock";
 
 const containerVars = {
@@ -29,6 +30,20 @@ export default function Home() {
     }
   };
 
+  const handleUpload = () => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.onchange = (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (file) {
+        console.log("업로드된 파일:", file.name);
+        alert(`${file.name} 처방전 분석을 시작합니다! (추후 AI 분석 기능 연결 예정)`);
+      }
+    };
+    input.click();
+  };
+
   return (
     <motion.div 
       className="p-6 pb-24"
@@ -36,11 +51,21 @@ export default function Home() {
       initial="hidden"
       animate="show"
     >
-      <motion.div variants={itemVars} className="mb-6">
-        <h1 className="text-2xl font-extrabold flex items-center gap-2">
-          안녕하세요! <span className="inline-block animate-wave origin-[70%_70%]">👋</span>
-        </h1>
-        <p className="text-muted-foreground mt-1 font-medium">건강한 하루를 시작해볼까요?</p>
+      <motion.div variants={itemVars} className="mb-6 flex justify-between items-end">
+        <div>
+          <h1 className="text-2xl font-extrabold flex items-center gap-2">
+            안녕하세요! <span className="inline-block animate-wave origin-[70%_70%]">👋</span>
+          </h1>
+          <p className="text-muted-foreground mt-1 font-medium">건강한 하루를 시작해볼까요?</p>
+        </div>
+        <Button 
+          onClick={handleUpload}
+          variant="outline" 
+          size="icon" 
+          className="rounded-2xl w-12 h-12 shadow-sm border-primary/20 hover:bg-primary/5 hover:text-primary transition-all"
+        >
+          <Camera className="w-6 h-6" />
+        </Button>
       </motion.div>
 
       <motion.div variants={itemVars}>
