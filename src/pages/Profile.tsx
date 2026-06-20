@@ -4,15 +4,14 @@ import { SiGmail, SiGooglecalendar, SiGooglesheets } from "react-icons/si";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MOCK_USER } from "@/data/mock";
 import { useLocation } from "wouter";
+import { useQuery } from "@tanstack/react-query";
+import api from "@/lib/api";
+import type { UserResponse } from "@/types/api";
 
 const containerVars = {
   hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
+  show: { opacity: 1, transition: { staggerChildren: 0.1 } }
 };
 
 const itemVars = {
@@ -20,16 +19,29 @@ const itemVars = {
   show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
 };
 
+const fetchUser = () =>
+  api.get<{ data: UserResponse }>("/api/users/me").then((r) => r.data.data);
+
+function formatJoinDate(isoString: string): string {
+  const d = new Date(isoString);
+  return `${d.getFullYear()}년 ${d.getMonth() + 1}월`;
+}
+
 export default function Profile() {
   const [, setLocation] = useLocation();
+  const { data: user } = useQuery({ queryKey: ["user"], queryFn: fetchUser });
 
   const handleLogout = () => {
     localStorage.removeItem("auth_token");
     setLocation("/login");
   };
 
+  const syncStatus = (synced: boolean | undefined) => synced
+    ? <Badge variant="outline" className="bg-green-50/60 text-green-600 border-green-200/30 backdrop-blur-sm rounded-lg">연결됨</Badge>
+    : <Badge variant="outline" className="bg-gray-50/60 text-gray-400 border-gray-200/30 backdrop-blur-sm rounded-lg">미연결</Badge>;
+
   return (
-    <motion.div 
+    <motion.div
       className="p-6 pb-24"
       variants={containerVars}
       initial="hidden"
@@ -44,14 +56,15 @@ export default function Profile() {
         <Card className="border border-white/40 shadow-xl bg-white/30 backdrop-blur-xl text-gray-800 overflow-hidden rounded-3xl">
           <CardContent className="p-6 flex items-center gap-5 relative">
             <div className="absolute -top-12 -right-12 w-40 h-40 bg-primary/10 rounded-full blur-2xl"></div>
-            
             <div className="w-16 h-16 rounded-full bg-white/40 flex items-center justify-center shrink-0 border border-white/30 backdrop-blur-md z-10">
               <User className="w-8 h-8 text-primary" />
             </div>
             <div className="relative z-10 flex-1 min-w-0">
-              <h2 className="font-bold text-xl mb-1 truncate text-gray-900">{MOCK_USER.name}</h2>
-              <p className="text-gray-500 text-sm font-medium mb-1 truncate">{MOCK_USER.email}</p>
-              <p className="text-gray-400 text-xs mt-2">가입일: {MOCK_USER.joinedAt}</p>
+              <h2 className="font-bold text-xl mb-1 truncate text-gray-900">{user?.name ?? "-"}</h2>
+              <p className="text-gray-500 text-sm font-medium mb-1 truncate">{user?.email ?? "-"}</p>
+              <p className="text-gray-400 text-xs mt-2">
+                가입일: {user?.createdAt ? formatJoinDate(user.createdAt) : "-"}
+              </p>
             </div>
           </CardContent>
         </Card>
@@ -68,11 +81,9 @@ export default function Profile() {
                 </div>
                 <span className="font-semibold text-sm">Gmail</span>
               </div>
-              <Badge variant="outline" className="bg-green-50/60 text-green-600 border-green-200/30 backdrop-blur-sm rounded-lg">
-                연결됨
-              </Badge>
+              {syncStatus(user?.gmailSynced)}
             </div>
-            
+
             <div className="flex items-center justify-between p-4 border-b border-white/20">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-blue-50/60 backdrop-blur-sm flex items-center justify-center text-[#4285F4] border border-blue-100/30">
@@ -80,11 +91,9 @@ export default function Profile() {
                 </div>
                 <span className="font-semibold text-sm">Google Calendar</span>
               </div>
-              <Badge variant="outline" className="bg-green-50/60 text-green-600 border-green-200/30 backdrop-blur-sm rounded-lg">
-                연결됨
-              </Badge>
+              {syncStatus(user?.calendarSynced)}
             </div>
-            
+
             <div className="flex items-center justify-between p-4">
               <div className="flex items-center gap-3">
                 <div className="w-8 h-8 rounded-xl bg-green-50/60 backdrop-blur-sm flex items-center justify-center text-[#34A853] border border-green-100/30">
@@ -92,9 +101,7 @@ export default function Profile() {
                 </div>
                 <span className="font-semibold text-sm">Google Sheets</span>
               </div>
-              <Badge variant="outline" className="bg-green-50/60 text-green-600 border-green-200/30 backdrop-blur-sm rounded-lg">
-                연결됨
-              </Badge>
+              {syncStatus(user?.sheetsSynced)}
             </div>
           </CardContent>
         </Card>
@@ -111,7 +118,7 @@ export default function Profile() {
           </div>
           <ChevronRight className="w-5 h-5 text-gray-400" />
         </button>
-        
+
         <button className="w-full flex items-center justify-between p-4 bg-white/40 backdrop-blur-md rounded-2xl shadow-sm border border-white/30 hover:bg-white/50 transition-all text-left">
           <div className="flex items-center gap-3">
             <span className="text-xl">❓</span>
@@ -122,8 +129,8 @@ export default function Profile() {
       </motion.div>
 
       <motion.div variants={itemVars}>
-        <Button 
-          variant="outline" 
+        <Button
+          variant="outline"
           className="w-full rounded-2xl h-14 border-red-200/50 bg-white/20 backdrop-blur-md text-red-500 hover:bg-red-50/50 hover:text-red-600 font-bold text-[15px] gap-2"
           onClick={handleLogout}
         >
