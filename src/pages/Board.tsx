@@ -3,15 +3,13 @@ import { MessageCircleHeart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { BOARD_POSTS } from "@/data/mock";
+import { useQuery } from "@tanstack/react-query";
+import api from "@/lib/api";
+import type { BoardPostResponse, PageResponse } from "@/types/api";
 
 const containerVars = {
   hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { staggerChildren: 0.1 }
-  }
+  show: { opacity: 1, transition: { staggerChildren: 0.1 } }
 };
 
 const itemVars = {
@@ -19,9 +17,28 @@ const itemVars = {
   show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 300, damping: 24 } }
 };
 
+const EMOJIS = ["🐣", "🐻", "🐰", "🦊", "🐧", "🐸", "🐱", "🐶"];
+const COLORS = ["bg-yellow-100", "bg-blue-100", "bg-green-100", "bg-orange-100", "bg-purple-100"];
+
+const fetchBoardPosts = () =>
+  api.get<{ data: PageResponse<BoardPostResponse> }>("/api/board").then((r) => r.data.data.content);
+
+function formatRelativeTime(isoString: string): string {
+  const diff = Date.now() - new Date(isoString).getTime();
+  const hours = Math.floor(diff / 3600000);
+  if (hours < 1) return "방금 전";
+  if (hours < 24) return `${hours}시간 전`;
+  return `${Math.floor(hours / 24)}일 전`;
+}
+
 export default function Board() {
+  const { data: posts = [], isLoading } = useQuery({
+    queryKey: ["board"],
+    queryFn: fetchBoardPosts,
+  });
+
   return (
-    <motion.div 
+    <motion.div
       className="p-6 pb-24"
       variants={containerVars}
       initial="hidden"
@@ -51,38 +68,41 @@ export default function Board() {
       </motion.div>
 
       <motion.div variants={itemVars} className="space-y-4">
-        {BOARD_POSTS.map((post) => (
-          <Card key={post.id} className="border border-white/40 shadow-sm bg-white/40 backdrop-blur-md hover:bg-white/50 transition-all overflow-hidden rounded-3xl">
-            <CardContent className="p-0">
-              <div className="p-5">
-                <div className="flex items-center gap-3 mb-4">
-                  <Avatar className={`w-10 h-10 ${post.color.replace('bg-', 'bg-')}/60 backdrop-blur-sm border border-white/30`}>
-                    <AvatarFallback className="bg-transparent text-xl font-bold">
-                      {post.emoji}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-0.5">
-                      <span className="font-bold text-gray-900">{post.petName}</span>
-                      <Badge variant="secondary" className="bg-white/40 text-gray-600 hover:bg-white/50 border border-white/30 backdrop-blur-sm px-1.5 py-0 text-[10px] rounded-md h-5 font-semibold">
-                        {post.ownerName}
-                      </Badge>
+        {isLoading ? (
+          <p className="text-sm text-muted-foreground text-center py-6">게시글을 불러오는 중...</p>
+        ) : posts.length === 0 ? (
+          <p className="text-sm text-muted-foreground text-center py-6">아직 게시글이 없습니다.</p>
+        ) : (
+          posts.map((post) => {
+            const emoji = EMOJIS[post.characterId % EMOJIS.length];
+            const color = COLORS[post.characterId % COLORS.length];
+            return (
+              <Card key={post.id} className="border border-white/40 shadow-sm bg-white/40 backdrop-blur-md hover:bg-white/50 transition-all overflow-hidden rounded-3xl">
+                <CardContent className="p-0">
+                  <div className="p-5">
+                    <div className="flex items-center gap-3 mb-4">
+                      <Avatar className={`w-10 h-10 ${color}/60 backdrop-blur-sm border border-white/30`}>
+                        <AvatarFallback className="bg-transparent text-xl font-bold">
+                          {emoji}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-0.5">
+                          <span className="font-bold text-gray-900">{post.characterName}</span>
+                        </div>
+                        <p className="text-[11px] text-gray-400 font-medium">
+                          {formatRelativeTime(post.createdAt)}
+                        </p>
+                      </div>
                     </div>
-                    <p className="text-[11px] text-gray-400 font-medium">{post.time}</p>
+                    <p className="text-[14px] text-gray-600 leading-relaxed">{post.content}</p>
                   </div>
-                </div>
-                
-                <div>
-                  <h3 className="font-bold text-[15px] text-gray-900 mb-2">{post.title}</h3>
-                  <p className="text-[14px] text-gray-600 leading-relaxed">
-                    {post.content}
-                  </p>
-                </div>
-              </div>
-              <Separator className="bg-white/20" />
-            </CardContent>
-          </Card>
-        ))}
+                  <Separator className="bg-white/20" />
+                </CardContent>
+              </Card>
+            );
+          })
+        )}
       </motion.div>
     </motion.div>
   );

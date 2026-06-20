@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@11.8.0",
   "scripts": {
     "dev": "vite --config vite.config.ts --host 0.0.0.0",
     "build": "vite build --config vite.config.ts",
@@ -71,6 +72,6 @@
     "zod": "^3.25.76"
   },
   "dependencies": {
-    "@react-oauth/google": "^0.13.5"
+    "axios": "^1.18.0"
   }
 }
