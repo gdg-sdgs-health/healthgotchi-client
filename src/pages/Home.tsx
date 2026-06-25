@@ -1,13 +1,15 @@
 import { motion } from "framer-motion";
 import { Link } from "wouter";
-import { Heart, Activity, TrendingUp, ChevronRight, Pill, Moon, Camera } from "lucide-react";
+import { Heart, Activity, TrendingUp, ChevronRight, Pill, Moon, Camera, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import api from "@/lib/api";
-import type { UserResponse, CharacterResponse, TodayMissionResponse } from "@/types/api";
+import { useToast } from "@/hooks/use-toast";
+import type { UserResponse, CharacterResponse, TodayMissionResponse, PrescriptionAnalysisResponse } from "@/types/api";
 
 const containerVars = {
   hidden: { opacity: 0 },
@@ -35,6 +37,10 @@ const CATEGORY_ICON_MAP: Record<string, string> = {
 };
 
 export default function Home() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
   const { data: user } = useQuery({ queryKey: ["user"], queryFn: fetchUser });
   const { data: character } = useQuery({ queryKey: ["character"], queryFn: fetchCharacter });
   const { data: todayMissions } = useQuery({ queryKey: ["missions/today"], queryFn: fetchTodayMissions });
@@ -61,14 +67,54 @@ export default function Home() {
   };
 
   const handleUpload = () => {
+    if (isAnalyzing) return;
     const input = document.createElement("input");
     input.type = "file";
-    input.accept = "image/*";
-    input.onchange = (e) => {
+    input.accept = "image/jpeg,image/png,image/jpg,application/pdf";
+    input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
-      if (file) {
-        console.log("업로드된 파일:", file.name);
-        alert(`${file.name} 처방전 분석을 시작합니다! (추후 AI 분석 기능 연결 예정)`);
+      if (!file) return;
+
+      setIsAnalyzing(true);
+      try {
+        const formData = new FormData();
+        formData.append("prescription", file);
+
+        const response = await api.post<PrescriptionAnalysisResponse>(
+          "https://famous-blowfish-plainly.ngrok-free.app/api/prescription/analyze",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              "ngrok-skip-browser-warning": "true",
+            },
+          }
+        );
+
+        const result = response.data;
+        if (result.success) {
+          toast({
+            title: "처방전 분석 완료",
+            description: result.message,
+          });
+          queryClient.invalidateQueries({ queryKey: ["missions/today"] });
+        } else {
+          toast({
+            title: "분석 실패",
+            description: result.message || "처방전 분석에 실패했습니다.",
+            variant: "destructive",
+          });
+        }
+      } catch (err: unknown) {
+        const message =
+          err instanceof Error ? err.message : "처방전 분석 중 오류가 발생했습니다.";
+        toast({
+          title: "오류",
+          description: message,
+          variant: "destructive",
+        });
+      } finally {
+        setIsAnalyzing(false);
       }
     };
     input.click();
@@ -92,9 +138,10 @@ export default function Home() {
           onClick={handleUpload}
           variant="outline"
           size="icon"
+          disabled={isAnalyzing}
           className="rounded-2xl w-12 h-12 shadow-sm border-primary/20 hover:bg-primary/5 hover:text-primary transition-all"
         >
-          <Camera className="w-6 h-6" />
+          {isAnalyzing ? <Loader2 className="w-6 h-6 animate-spin" /> : <Camera className="w-6 h-6" />}
         </Button>
       </motion.div>
 

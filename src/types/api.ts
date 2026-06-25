@@ -47,3 +47,20 @@ export interface PageResponse<T> {
   size: number;
   number: number;
 }
+
+export interface PrescriptionMission {
+  id: number;
+  title: string;
+  description: string;
+  category: string;
+  targetTime: string;
+  streakCount: number;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface PrescriptionAnalysisResponse {
+  success: boolean;
+  data: PrescriptionMission[];
+  message: string;
+}
